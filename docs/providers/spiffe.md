@@ -1,8 +1,9 @@
 # SPIFFE workload identity
 
 SPIFFE provides provider-neutral workload identities through SPIFFE IDs and
-SPIFFE Verifiable Identity Documents (SVIDs). A workload obtains its own SVIDs
-from the Stable SPIFFE Workload API. Trusted infrastructure acting for another
+SPIFFE Verifiable Identity Documents (SVIDs). A SPIFFE-native workload obtains
+its own SVIDs directly from the Stable SPIFFE Workload API, without Kubernetes
+projected ServiceAccount tokens. Trusted infrastructure acting for another
 workload can obtain that workload's SVIDs through the Incubating SPIFFE Broker
 API.
 
@@ -28,8 +29,8 @@ SPIFFE or SPIRE deployment supports it.
 
 | Choice | Result |
 | --- | --- |
-| Local Workload API | The caller receives its own SVIDs and trust bundles. |
-| Broker API | An authorized broker receives SVIDs and bundles for one referenced workload. |
+| Local Workload API | The caller receives its own SVIDs and trust bundles. This is the primary identity source for a SPIFFE-native workload. |
+| Broker API | An authorized broker receives SVIDs and bundles for one referenced workload. Use this for delegated tenant identity. |
 | Exported key or token | Identity material is copied into a file or Secret. Avoid when the API can provide and rotate it. |
 
 An SVID can authenticate directly to a SPIFFE-aware peer. It can also be used as
@@ -70,10 +71,11 @@ Mount only the intended endpoint socket into the pod. Unix domain sockets are
 preferred. A TCP Workload Endpoint must remain local to one host and use a
 network mechanism that lets the implementation strongly identify the caller.
 
-The Workload Endpoint does not require a client credential. The implementation
-identifies the caller out of band, such as through kernel or orchestrator
-attestation. Clients must use a conforming SPIFFE library, which supplies the
-required `workload.spiffe.io: true` gRPC metadata.
+The Workload Endpoint does not require a Kubernetes ServiceAccount token or any
+other client credential. The implementation identifies the caller out of band,
+such as through kernel or orchestrator attestation. Clients must use a
+conforming SPIFFE library, which supplies the required `workload.spiffe.io:
+true` gRPC metadata.
 
 ```text
 Local workload

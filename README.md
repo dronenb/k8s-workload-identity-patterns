@@ -53,6 +53,12 @@ be obtained.
 - [SPIFFE](docs/providers/spiffe.md) covers explicit local identity through
   `SPIFFE_ENDPOINT_SOCKET` and Incubating delegated tenant identity through
   `SPIFFE_BROKER_SOCKET`.
+- [External Secrets examples](docs/examples/external-secrets.md) show tenant-scoped
+  SecretStore and ExternalSecret manifests for Google Cloud, AWS, and Azure.
+- [Secrets Store CSI examples](docs/examples/secrets-store-csi.md) show mounted
+  workload identity examples for Google Cloud, AWS, and Azure.
+- [Operator survey](docs/operators-survey.md) summarizes other controllers that
+  model identity well and common failure modes to avoid.
 
 ## Cross-cloud support
 

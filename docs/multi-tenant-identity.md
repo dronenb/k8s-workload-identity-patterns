@@ -53,7 +53,7 @@ exactly one effective target identity source:
 | Source | Purpose | Guidance |
 | --- | --- | --- |
 | `serviceAccountRef` | Obtain a target Kubernetes JWT and federate it to the cloud provider. | Recommended. |
-| SPIFFE Broker reference | Obtain an SVID for the referenced workload. | Incubating; use only with a defined relying-party integration. |
+| SPIFFE Broker reference | Obtain an SVID for the referenced workload. | Incubating; use only with a defined relying-party integration. SPIFFE-native workloads can also use the local Workload API for their own identity. |
 | `secretRef` | Read static target credentials from a Kubernetes Secret. | Not recommended; compatibility only. |
 | `controllerIdentity` | Deliberately use the controller principal. | Explicit, policy-controlled exception. |
 
@@ -188,9 +188,11 @@ entry merely because they resolve to the same textual cloud identity.
 ## SPIFFE Broker
 
 The SPIFFE Workload API returns identity for the local workload connected to its
-socket. Delegated operators need a different primitive when they request
-identity for a referenced target workload. The developing SPIFFE Broker API is
-intended for that class of use case.
+socket. A SPIFFE-native target workload can use that API for its own identity
+without Kubernetes projected ServiceAccount tokens. Delegated operators need a
+different primitive when they request identity for a referenced target
+workload. The developing SPIFFE Broker API is intended for that class of use
+case.
 
 ```text
 Controller authenticates to broker
@@ -208,6 +210,8 @@ Keep three principals distinct:
 `SPIFFE_ENDPOINT_SOCKET` identifies the local Workload API endpoint.
 `SPIFFE_BROKER_SOCKET` is associated with the developing broker model and must
 be documented as incubating rather than as a stable cross-platform contract.
+The local Workload API is for the workload itself; delegated tenant identity
+comes from the Broker API.
 
 An X.509-SVID or JWT-SVID is not automatically a cloud credential. The relying
 party must directly trust that SVID or define a provider-supported exchange.
